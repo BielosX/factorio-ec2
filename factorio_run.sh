@@ -6,8 +6,6 @@ FIFO_FILE=/var/lib/factorio/factorio.fifo
 PID_FILE=/var/lib/factorio/factorio.pid
 CMD_OUT=/var/lib/factorio/server.out
 
-mkdir -p /var/lib/factorio
-
 if [ ! -e $FIFO_FILE ]; then
     mkfifo $FIFO_FILE
 fi

@@ -9,4 +9,10 @@ wget -nv -O server.tar.xz $FACTORIO_LINK
 tar -xf server.tar.xz
 mkdir -p /opt/factorio
 cp -r factorio/* /opt/factorio
+adduser factorio --user-group
+chown -R factorio:factorio /opt/factorio
+chmod -R g+rwx /opt/factorio
+mkdir -p /var/lib/factorio
+chown -R factorio:factorio /var/lib/factorio
+chmod -R g+rwx /var/lib/factorio
 systemctl enable factorio.service

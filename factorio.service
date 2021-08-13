@@ -3,6 +3,9 @@ Wants=network-online.target
 After=network.target network-online.target cloud-final.service
 
 [Service]
+User=factorio
+Group=factorio
+
 Type=forking
 ExecStart=/opt/factorio/factorio_run.sh
 PIDFile=/var/lib/factorio/factorio.pid
