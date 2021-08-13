@@ -1,6 +1,15 @@
+[Unit]
+Wants=network-online.target
+After=network.target network-online.target cloud-final.service
+
 [Service]
 Type=forking
 ExecStart=/opt/factorio/factorio_run.sh
 PIDFile=/var/lib/factorio/factorio.pid
-TimeStartSec=20
-Restart=always
+TimeoutStartSec=20
+TimeoutStopSec=20
+RestartSec=20
+Restart=on-failure
+
+[Install]
+WantedBy=cloud-init.target
