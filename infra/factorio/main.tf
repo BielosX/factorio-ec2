@@ -153,7 +153,7 @@ resource "aws_instance" "factorio_server" {
     "dev_name": local.dev_name
     "config_bucket": aws_s3_bucket.config_bucket.id
   })
-  disable_api_termination = true
+  disable_api_termination = false
   instance_initiated_shutdown_behavior = "stop"
   subnet_id = aws_subnet.public_subnet.id
 
