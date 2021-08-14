@@ -11,19 +11,13 @@ resource "aws_ebs_volume" "saves_volume" {
   size = 10
 }
 
-data "aws_ami" "amazon_linux_2" {
+data "aws_ami" "factorio_image" {
   most_recent = true
   filter {
-    name   = "owner-alias"
-    values = ["amazon"]
-  }
-
-
-  filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["factorio-${var.factorio_version}"]
   }
-  owners = ["amazon"]
+  owners = ["self"]
 }
 
 resource "aws_security_group" "factorio_sg" {
@@ -42,12 +36,14 @@ resource "aws_security_group" "factorio_sg" {
 }
 
 resource "aws_instance" "factorio_server" {
-  ami = data.aws_ami.amazon_linux_2.id
+  ami = data.aws_ami.factorio_image.id
   instance_type = "t3.micro"
   associate_public_ip_address = true
   availability_zone = data.aws_availability_zones.available.names[0]
   vpc_security_group_ids = [aws_security_group.factorio_sg.id]
   user_data = file("${path.module}/init.sh")
+  disable_api_termination = true
+  instance_initiated_shutdown_behavior = "stop"
 }
 
 resource "aws_volume_attachment" "attach_ebs" {
