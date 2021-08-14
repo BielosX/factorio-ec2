@@ -1,7 +1,7 @@
 #!/bin/bash
 FACTORIO_BIN=/opt/factorio/bin/x64/factorio
 SAVES_DIR=/opt/factorio/saves
-INIT_SAVE=/opt/factorio/saves/init.zip
+SERVER_SAVE=/opt/factorio/saves/factorio.zip
 FIFO_FILE=/var/lib/factorio/factorio.fifo
 PID_FILE=/var/lib/factorio/factorio.pid
 CMD_OUT=/var/lib/factorio/server.out
@@ -12,9 +12,9 @@ if [ ! -e $FIFO_FILE ]; then
 fi
 
 if [ -e $SAVES_DIR ]; then
-    if [ ! -e $INIT_SAVE ]; then
-        echo "Init save not found. Creating one."
-        $FACTORIO_BIN --create $INIT_SAVE
+    if [ ! -e $SERVER_SAVE ]; then
+        echo "Save zip not found. Creating one."
+        $FACTORIO_BIN --create $SERVER_SAVE
     fi
 
     $FACTORIO_BIN --start-server-load-latest --server-settings "$SETTINGS_FILE" >> $CMD_OUT 2>&1 & echo $! > $PID_FILE
