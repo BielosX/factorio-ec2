@@ -1,11 +1,18 @@
 #!/bin/bash
 
-FS_TYPE=$(lsblk -o FSTYPE -n /dev/sdf)
-DEV_NAME=$(lsblk -o NAME -n /dev/sdf)
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c ssm:${cw_config_param}
+
+while ! lsblk "${dev_name}" ; do
+  echo "${dev_name} is not attached yet. Waiting 60 seconds"
+  sleep 60
+done
+
+FS_TYPE=$(lsblk -o FSTYPE -n "${dev_name}")
+DEV_NAME=$(lsblk -o NAME -n "${dev_name}")
 DEV_PATH=$(printf "/dev/%s" "$DEV_NAME")
 
 if [ ! "xfs" = "$FS_TYPE" ]; then
-  mkfs -t xfs /dev/sdf
+  mkfs -t xfs "$DEV_PATH"
 fi
 
 if ! mount | grep "/opt/factorio_saves"; then

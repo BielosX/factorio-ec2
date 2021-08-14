@@ -75,13 +75,57 @@ resource "aws_security_group" "factorio_sg" {
   }
 }
 
+resource "aws_ssm_parameter" "cw_config_param" {
+  name = "factorio_cw_config"
+  type = "String"
+  value = file("${path.module}/amazon-cloudwatch-agent.json")
+}
+
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    effect = "Allow"
+    principals {
+      identifiers = ["ec2.amazonaws.com"]
+      type = "Service"
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "factorio_server_role" {
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume_role.json
+}
+
+resource "aws_iam_instance_profile" "factorio_server_profile" {
+  role = aws_iam_role.factorio_server_role.id
+}
+
+resource "aws_iam_role_policy_attachment" "attach_cw_access" {
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  role = aws_iam_role.factorio_server_role.id
+}
+
+resource "aws_iam_role_policy_attachment" "attach_ssm_read_only" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
+  role = aws_iam_role.factorio_server_role.id
+}
+
+locals {
+  dev_name = "/dev/sdf"
+}
+
 resource "aws_instance" "factorio_server" {
   ami = data.aws_ami.factorio_image.id
   instance_type = "t3.micro"
   associate_public_ip_address = true
   availability_zone = data.aws_availability_zones.available.names[0]
   vpc_security_group_ids = [aws_security_group.factorio_sg.id]
-  user_data = file("${path.module}/init.sh")
+  iam_instance_profile = aws_iam_instance_profile.factorio_server_profile.id
+  user_data = templatefile("${path.module}/init.sh.tmpl",
+  {
+    "cw_config_param": aws_ssm_parameter.cw_config_param.id
+    "dev_name": local.dev_name
+  })
   disable_api_termination = true
   instance_initiated_shutdown_behavior = "stop"
   subnet_id = aws_subnet.public_subnet.id
@@ -92,7 +136,7 @@ resource "aws_instance" "factorio_server" {
 }
 
 resource "aws_volume_attachment" "attach_ebs" {
-  device_name = "/dev/sdf"
+  device_name = local.dev_name
   instance_id = aws_instance.factorio_server.id
   volume_id = aws_ebs_volume.saves_volume.id
 }
