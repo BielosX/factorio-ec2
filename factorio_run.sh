@@ -16,7 +16,7 @@ if [ -e $SAVES_DIR ]; then
         $FACTORIO_BIN --create $INIT_SAVE
     fi
 
-    $FACTORIO_BIN --start-server $INIT_SAVE >> $CMD_OUT 2>&1 & echo $! > $PID_FILE
+    $FACTORIO_BIN --start-server-load-latest >> $CMD_OUT 2>&1 & echo $! > $PID_FILE
 else
     echo -e "Saves DIR does not exist!"
     exit 1
