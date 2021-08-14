@@ -1,7 +1,7 @@
 data "amazon-ami" "amazon-linux-2" {
   owners = ["amazon"]
   most_recent = true
-  region = "eu-central-1"
+  region = var.region
   filters = {
     virtualization-type = "hvm"
     name = "amzn2-ami-hvm-*-x86_64-gp2"
@@ -11,7 +11,7 @@ data "amazon-ami" "amazon-linux-2" {
 
 source "amazon-ebs" "main" {
   ami_name = "factorio-${var.factorio_version}"
-  region = "eu-central-1"
+  region = var.region
   profile = "default"
   instance_type = "t3.medium"
   ssh_username = "ec2-user"
@@ -21,6 +21,23 @@ source "amazon-ebs" "main" {
 build {
   sources = ["source.amazon-ebs.main"]
   provisioner "shell" {
-    inline = ["echo Connected via SSM at '${build.User}@${build.Host}:${build.Port}'"]
+    script = "install_tools.sh"
+    execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }} ${var.region}'"
+  }
+  provisioner "file" {
+    source = "../factorio.service"
+    destination = "/tmp/factorio.service"
+  }
+  provisioner "file" {
+    source = "../factorio_run.sh"
+    destination = "/tmp/factorio_run.sh"
+  }
+  provisioner "shell" {
+    script = "../copy_to_priv.sh"
+    execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+  }
+  provisioner "shell" {
+    script = "../factorio_install.sh"
+    execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }} ${var.factorio_version}'"
   }
 }

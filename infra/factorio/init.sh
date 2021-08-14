@@ -10,10 +10,10 @@ fi
 
 if ! mount | grep "/opt/factorio_saves"; then
   mkdir -p /opt/factorio_saves
-  chown -R factorio:factorio /opt/factorio_saves
-  chmod -R g+rwx /opt/factorio_saves
   UUID=$(blkid "$DEV_PATH" | grep -oP 'UUID="\K([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})')
   FSTAB_LINE=$(printf "UUID=%s  /opt/factorio_saves  xfs  defaults,nofail  0  2" "$UUID")
   echo "$FSTAB_LINE" >> /etc/fstab
   mount -a
+  chown -R factorio:factorio /opt/factorio_saves
+  chmod -R g+rwx /opt/factorio_saves
 fi

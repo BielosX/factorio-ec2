@@ -44,6 +44,10 @@ resource "aws_instance" "factorio_server" {
   user_data = file("${path.module}/init.sh")
   disable_api_termination = true
   instance_initiated_shutdown_behavior = "stop"
+
+  tags = {
+    "Name": "factorio-server"
+  }
 }
 
 resource "aws_volume_attachment" "attach_ebs" {
