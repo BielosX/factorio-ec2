@@ -29,8 +29,16 @@ build {
     destination = "/tmp/factorio.service"
   }
   provisioner "file" {
+    source = "../settings-loader.service"
+    destination = "/tmp/settings-loader.service"
+  }
+  provisioner "file" {
     source = "../factorio_run.sh"
     destination = "/tmp/factorio_run.sh"
+  }
+  provisioner "file" {
+    source = "../load_settings.sh"
+    destination = "/tmp/load_settings.sh"
   }
   provisioner "shell" {
     script = "../copy_to_priv.sh"

@@ -110,8 +110,34 @@ resource "aws_iam_role_policy_attachment" "attach_ssm_read_only" {
   role = aws_iam_role.factorio_server_role.id
 }
 
+resource "aws_iam_role_policy_attachment" "s3_read_only" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+  role = aws_iam_role.factorio_server_role.id
+}
+
 locals {
   dev_name = "/dev/sdf"
+}
+
+data "aws_caller_identity" "current" {}
+
+resource "aws_s3_bucket" "config_bucket" {
+  bucket = "factorio-config-bucket-${var.region}-${data.aws_caller_identity.current.account_id}"
+  acl = "public-read"
+}
+
+resource "aws_s3_bucket_object" "server_settings" {
+  bucket = aws_s3_bucket.config_bucket.id
+  key = "server-settings.json"
+  source = "${path.module}/../../server-settings.json"
+  source_hash = filemd5("${path.module}/../../server-settings.json")
+}
+
+resource "aws_s3_bucket_object" "server_admin_list" {
+  bucket = aws_s3_bucket.config_bucket.id
+  key = "server-adminlist.json"
+  source = "${path.module}/../../server-adminlist.json"
+  source_hash = filemd5("${path.module}/../../server-adminlist.json")
 }
 
 resource "aws_instance" "factorio_server" {
@@ -125,6 +151,7 @@ resource "aws_instance" "factorio_server" {
   {
     "cw_config_param": aws_ssm_parameter.cw_config_param.id
     "dev_name": local.dev_name
+    "config_bucket": aws_s3_bucket.config_bucket.id
   })
   disable_api_termination = true
   instance_initiated_shutdown_behavior = "stop"
@@ -132,6 +159,10 @@ resource "aws_instance" "factorio_server" {
 
   tags = {
     "Name": "factorio-server"
+  }
+
+  credit_specification {
+    cpu_credits = "standard"
   }
 }
 

@@ -1,6 +1,6 @@
 [Unit]
 Wants=network-online.target
-After=network.target network-online.target cloud-final.service
+After=network.target network-online.target cloud-final.service settings-loader.service
 
 [Service]
 User=factorio

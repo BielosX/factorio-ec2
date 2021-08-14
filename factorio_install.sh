@@ -15,4 +15,8 @@ chmod -R g+rwx /opt/factorio
 mkdir -p /var/lib/factorio
 chown -R factorio:factorio /var/lib/factorio
 chmod -R g+rwx /var/lib/factorio
+mkdir -p /etc/factorio
+chown -R factorio:factorio /etc/factorio
+chmod -R g+rwx /etc/factorio
+systemctl enable settings-loader.service
 systemctl enable factorio.service
