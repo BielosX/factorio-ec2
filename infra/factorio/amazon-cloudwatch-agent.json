@@ -16,5 +16,22 @@
         ]
       }
     }
+  },
+  "metrics": {
+    "namespace": "FactorioMetrics",
+    "metrics_collected": {
+      "mem": {
+        "measurement": [
+          "mem_used",
+          "mem_total"
+        ],
+        "metrics_collection_interval": 60
+      }
+    },
+    "append_dimensions": {
+      "InstanceId": "${aws:InstanceId}"
+    },
+    "aggregation_dimensions" : [["InstanceId"]],
+    "force_flush_interval" : 30
   }
 }
