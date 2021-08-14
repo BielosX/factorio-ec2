@@ -140,6 +140,20 @@ resource "aws_s3_bucket_object" "server_admin_list" {
   source_hash = filemd5("${path.module}/../../server-adminlist.json")
 }
 
+resource "aws_s3_bucket_object" "map-gen-settings" {
+  bucket = aws_s3_bucket.config_bucket.id
+  key = "map-gen-settings.json"
+  source = "${path.module}/../../map-gen-settings.json"
+  source_hash = filemd5("${path.module}/../../map-gen-settings.json")
+}
+
+resource "aws_s3_bucket_object" "map-settings" {
+  bucket = aws_s3_bucket.config_bucket.id
+  key = "map-settings.json"
+  source = "${path.module}/../../map-settings.json"
+  source_hash = filemd5("${path.module}/../../map-settings.json")
+}
+
 resource "aws_instance" "factorio_server" {
   ami = data.aws_ami.factorio_image.id
   instance_type = "t3.medium"
