@@ -142,7 +142,7 @@ resource "aws_s3_bucket_object" "server_admin_list" {
 
 resource "aws_instance" "factorio_server" {
   ami = data.aws_ami.factorio_image.id
-  instance_type = "t3.micro"
+  instance_type = "t3.medium"
   associate_public_ip_address = true
   availability_zone = data.aws_availability_zones.available.names[0]
   vpc_security_group_ids = [aws_security_group.factorio_sg.id]
