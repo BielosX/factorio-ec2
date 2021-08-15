@@ -9,6 +9,21 @@ SETTINGS_FILE=/etc/factorio/server-settings.json
 MAP_GEN=/etc/factorio/map-gen-settings.json
 MAP_SETTINGS=/etc/factorio/map-settings.json
 
+if [ ! -e $MAP_GEN ]; then
+    echo -e "map-gen-settings.json does not exist!"
+    exit 1
+fi
+
+if [ ! -e $MAP_SETTINGS ]; then
+    echo -e "map-settings.json does not exist!"
+    exit 1
+fi
+
+if [ ! -e $SETTINGS_FILE ]; then
+    echo -e "server-settings.json does not exist!"
+    exit 1
+fi
+
 if [ ! -e $FIFO_FILE ]; then
     mkfifo $FIFO_FILE
 fi
