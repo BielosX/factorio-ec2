@@ -1,0 +1,8 @@
+schemaVersion: '2.2'
+description: Copy Factorio saves to backup bucket
+mainSteps:
+  - action: aws:runShellScript
+    name: CopySaves
+    inputs:
+      runCommand:
+        - for save in /opt/factorio/saves/*.zip; do aws s3 cp "$save" "s3://${bucket_name}/$(basename $save)"; done

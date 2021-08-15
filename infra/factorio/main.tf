@@ -110,8 +110,13 @@ resource "aws_iam_role_policy_attachment" "attach_ssm_read_only" {
   role = aws_iam_role.factorio_server_role.id
 }
 
-resource "aws_iam_role_policy_attachment" "s3_read_only" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess"
+resource "aws_iam_role_policy_attachment" "s3_full_access" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+  role = aws_iam_role.factorio_server_role.id
+}
+
+resource "aws_iam_role_policy_attachment" "ssm_managed" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   role = aws_iam_role.factorio_server_role.id
 }
 
@@ -124,6 +129,25 @@ data "aws_caller_identity" "current" {}
 resource "aws_s3_bucket" "config_bucket" {
   bucket = "factorio-config-bucket-${var.region}-${data.aws_caller_identity.current.account_id}"
   acl = "public-read"
+  force_destroy = true
+}
+
+resource "aws_s3_bucket" "saves_backup_bucket" {
+  bucket = "factorio-saves-buckup-${var.region}-${data.aws_caller_identity.current.account_id}"
+  acl = "public-read"
+  force_destroy = true
+  versioning {
+    enabled = true
+  }
+}
+
+resource "aws_ssm_document" "saves_backup" {
+  name = "factorio_saves_backup"
+  document_type = "Command"
+  content = templatefile("${path.module}/backup_saves_document.yaml.tmpl", {
+    "bucket_name": aws_s3_bucket.saves_backup_bucket.id
+  })
+  document_format = "YAML"
 }
 
 resource "aws_s3_bucket_object" "server_settings" {
