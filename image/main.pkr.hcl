@@ -41,6 +41,10 @@ build {
     destination = "/tmp/load_settings.sh"
   }
   provisioner "shell" {
+    script = "../install_extras.sh"
+    execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+  }
+  provisioner "shell" {
     script = "../copy_to_priv.sh"
     execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
   }
