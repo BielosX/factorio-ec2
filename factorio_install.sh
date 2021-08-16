@@ -20,3 +20,4 @@ chown -R factorio:factorio /etc/factorio
 chmod -R g+rwx /etc/factorio
 systemctl enable settings-loader.service
 systemctl enable factorio.service
+systemctl enable backup-on-change.service

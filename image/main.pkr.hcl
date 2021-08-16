@@ -33,6 +33,14 @@ build {
     destination = "/tmp/settings-loader.service"
   }
   provisioner "file" {
+    source = "../backup-on-change.service"
+    destination = "/tmp/backup-on-change.service"
+  }
+  provisioner "file" {
+    source = "../backup_save_on_change.sh"
+    destination = "/tmp/backup_save_on_change.sh"
+  }
+  provisioner "file" {
     source = "../factorio_run.sh"
     destination = "/tmp/factorio_run.sh"
   }

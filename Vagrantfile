@@ -3,6 +3,8 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "factorio.service", destination: "/tmp/factorio.service"
     config.vm.provision "file", source: "settings-loader.service", destination: "/tmp/settings-loader.service"
     config.vm.provision "file", source: "factorio_run.sh", destination: "/tmp/factorio_run.sh"
+    config.vm.provision "file", source: "backup-on-change.service", destination: "/tmp/backup-on-change.service"
+    config.vm.provision "file", source: "backup_save_on_change.sh", destination: "/tmp/backup_save_on_change.sh"
     config.vm.provision "file", source: "vagrant_scripts/load_settings.sh", destination: "/tmp/load_settings.sh"
     config.vm.provision "file", source: "server-settings.json", destination: "/tmp/server-settings.json"
     config.vm.provision "file", source: "server-adminlist.json", destination: "/tmp/server-adminlist.json"

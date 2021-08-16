@@ -32,9 +32,11 @@ if [ -e $SAVES_DIR ]; then
     if [ ! -e $SERVER_SAVE ]; then
         echo "Save zip not found. Creating one."
         $FACTORIO_BIN --create $SERVER_SAVE --map-gen-settings $MAP_GEN --map-settings $MAP_SETTINGS
+        BACKUP_PATH=$(printf "%s.backup_1" $SERVER_SAVE)
+        cp $SERVER_SAVE "$BACKUP_PATH"
     fi
 
-    $FACTORIO_BIN --start-server-load-latest --server-settings "$SETTINGS_FILE" >> $CMD_OUT 2>&1 & echo $! > $PID_FILE
+    $FACTORIO_BIN --start-server $SERVER_SAVE --server-settings "$SETTINGS_FILE" >> $CMD_OUT 2>&1 & echo $! > $PID_FILE
 else
     echo -e "Saves DIR does not exist!"
     exit 1
