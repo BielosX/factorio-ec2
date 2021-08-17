@@ -45,7 +45,7 @@
         "max_colliding_tiles_coefficient": 0.9,
         "settler_group_min_size": 5,
         "settler_group_max_size": 20,
-        "min_expansion_cooldown": 14400,
+        "min_expansion_cooldown": 21600,
         "max_expansion_cooldown": 216000
     },
     "unit_group": {
