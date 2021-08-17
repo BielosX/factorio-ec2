@@ -34,7 +34,7 @@
         "pollution_factor": 9e-07
     },
     "enemy_expansion": {
-        "enabled": false,
+        "enabled": true,
         "max_expansion_distance": 7,
         "friendly_base_influence_radius": 2,
         "enemy_building_influence_radius": 2,
