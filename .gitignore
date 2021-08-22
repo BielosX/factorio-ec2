@@ -30,3 +30,4 @@ override.tf.json
 .vagrant
 .idea
 .terraform*
+*.zip

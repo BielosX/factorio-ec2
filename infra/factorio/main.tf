@@ -209,3 +209,7 @@ resource "aws_volume_attachment" "attach_ebs" {
   instance_id = aws_instance.factorio_server.id
   volume_id = aws_ebs_volume.saves_volume.id
 }
+
+module "old-ami-cleaner" {
+  source = "../old-ami-cleaner"
+}
