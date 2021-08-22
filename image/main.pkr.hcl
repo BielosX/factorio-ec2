@@ -16,6 +16,9 @@ source "amazon-ebs" "main" {
   instance_type = "t3.medium"
   ssh_username = "ec2-user"
   source_ami = data.amazon-ami.amazon-linux-2.id
+  tags {
+    Name = "factorio-server-image"
+  }
 }
 
 build {
