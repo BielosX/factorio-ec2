@@ -9,6 +9,9 @@ data "aws_availability_zones" "available" {
 resource "aws_ebs_volume" "saves_volume" {
   availability_zone = data.aws_availability_zones.available.names[0]
   size = 10
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 data "aws_ami" "factorio_image" {
