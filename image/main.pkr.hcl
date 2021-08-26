@@ -10,14 +10,15 @@ data "amazon-ami" "amazon-linux-2" {
 }
 
 source "amazon-ebs" "main" {
-  ami_name = "factorio-${var.factorio_version}"
+  ami_name = "factorio-${var.factorio_version}-build-{{timestamp}}"
   region = var.region
   profile = "default"
   instance_type = "t3.medium"
   ssh_username = "ec2-user"
   source_ami = data.amazon-ami.amazon-linux-2.id
-  tags {
-    Name = "factorio-server-image"
+  tag {
+    key = "Name"
+    value = "factorio-server-image"
   }
 }
 
@@ -30,10 +31,6 @@ build {
   provisioner "file" {
     source = "../factorio.service"
     destination = "/tmp/factorio.service"
-  }
-  provisioner "file" {
-    source = "../settings-loader.service"
-    destination = "/tmp/settings-loader.service"
   }
   provisioner "file" {
     source = "../backup-on-change.service"

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 BUCKET=$(cat /etc/factorio/bucket.conf)
+echo "Fetching Factorio config files from S3 bucket ${BUCKET}"
 S3_ADDR=$(printf "s3://%s/server-settings.json" "$BUCKET")
 aws s3 cp "$S3_ADDR" /etc/factorio/server-settings.json
 chown -R factorio:factorio /etc/factorio/server-settings.json

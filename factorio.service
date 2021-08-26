@@ -1,6 +1,6 @@
 [Unit]
 Wants=network-online.target
-After=network.target network-online.target cloud-final.service settings-loader.service
+After=network.target network-online.target cloud-final.service
 
 [Service]
 User=factorio
@@ -8,11 +8,13 @@ Group=factorio
 
 Type=forking
 ExecStart=/opt/factorio/factorio_run.sh
+ExecStartPre=/opt/factorio/load_settings.sh
 PIDFile=/var/lib/factorio/factorio.pid
 TimeoutStartSec=20
 TimeoutStopSec=20
 RestartSec=20
 Restart=on-failure
+PermissionStartOnly=true
 
 [Install]
 WantedBy=cloud-init.target

@@ -15,7 +15,7 @@ data "aws_ami" "factorio_image" {
   most_recent = true
   filter {
     name   = "name"
-    values = ["factorio-${var.factorio_version}"]
+    values = ["factorio-${var.factorio_version}-build-*"]
   }
   owners = ["self"]
 }
