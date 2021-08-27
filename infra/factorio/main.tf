@@ -125,6 +125,10 @@ resource "aws_iam_role_policy_attachment" "ssm_managed" {
 
 locals {
   dev_name = "/dev/sdf"
+  server_settings = "${path.module}/../../server_config/server-settings.json"
+  server_admin_list = "${path.module}/../../server_config/server-adminlist.json"
+  map_gen_settings = "${path.module}/../../server_config/map-gen-settings.json"
+  map_settings = "${path.module}/../../server_config/map-settings.json"
 }
 
 data "aws_caller_identity" "current" {}
@@ -156,29 +160,29 @@ resource "aws_ssm_document" "saves_backup" {
 resource "aws_s3_bucket_object" "server_settings" {
   bucket = aws_s3_bucket.config_bucket.id
   key = "server-settings.json"
-  source = "${path.module}/../../server-settings.json"
-  source_hash = filemd5("${path.module}/../../server-settings.json")
+  source = local.server_settings
+  source_hash = filemd5(local.server_settings)
 }
 
 resource "aws_s3_bucket_object" "server_admin_list" {
   bucket = aws_s3_bucket.config_bucket.id
   key = "server-adminlist.json"
-  source = "${path.module}/../../server-adminlist.json"
-  source_hash = filemd5("${path.module}/../../server-adminlist.json")
+  source = local.server_admin_list
+  source_hash = filemd5(local.server_admin_list)
 }
 
 resource "aws_s3_bucket_object" "map-gen-settings" {
   bucket = aws_s3_bucket.config_bucket.id
   key = "map-gen-settings.json"
-  source = "${path.module}/../../map-gen-settings.json"
-  source_hash = filemd5("${path.module}/../../map-gen-settings.json")
+  source = local.map_gen_settings
+  source_hash = filemd5(local.map_gen_settings)
 }
 
 resource "aws_s3_bucket_object" "map-settings" {
   bucket = aws_s3_bucket.config_bucket.id
   key = "map-settings.json"
-  source = "${path.module}/../../map-settings.json"
-  source_hash = filemd5("${path.module}/../../map-settings.json")
+  source = local.map_settings
+  source_hash = filemd5(local.map_settings)
 }
 
 resource "aws_instance" "factorio_server" {
