@@ -6,9 +6,12 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_ebs_volume" "saves_volume" {
+resource "aws_ebs_volume" "factorio_saves_volume" {
   availability_zone = data.aws_availability_zones.available.names[0]
-  size = 10
+  size = 5
+  type = "gp3"
+  iops = 3000
+  throughput = 125
   lifecycle {
     prevent_destroy = true
   }
@@ -214,7 +217,7 @@ resource "aws_instance" "factorio_server" {
 resource "aws_volume_attachment" "attach_ebs" {
   device_name = local.dev_name
   instance_id = aws_instance.factorio_server.id
-  volume_id = aws_ebs_volume.saves_volume.id
+  volume_id = aws_ebs_volume.factorio_saves_volume.id
 }
 
 module "old-ami-cleaner" {
