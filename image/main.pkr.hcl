@@ -13,7 +13,7 @@ source "amazon-ebs" "main" {
   ami_name = "factorio-${var.factorio_version}-build-{{timestamp}}"
   region = var.region
   profile = "default"
-  instance_type = "t3.medium"
+  instance_type = "t3.micro"
   ssh_username = "ec2-user"
   source_ami = data.amazon-ami.amazon-linux-2.id
   tag {
