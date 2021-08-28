@@ -1,7 +1,3 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 resource "aws_vpc" "simple_vpc" {
   cidr_block = "10.0.0.0/22"
   enable_dns_support = true
@@ -11,7 +7,7 @@ resource "aws_vpc" "simple_vpc" {
 resource "aws_subnet" "public_subnet" {
   cidr_block = "10.0.1.0/24"
   vpc_id = aws_vpc.simple_vpc.id
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone = var.availability_zone
   map_public_ip_on_launch = true
   tags = {
     Name = "Public"

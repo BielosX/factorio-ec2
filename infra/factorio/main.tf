@@ -2,16 +2,26 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
 module "old-ami-cleaner" {
   source = "./old-ami-cleaner"
 }
 
+locals {
+  first_az = data.aws_availability_zones.available.names[0]
+}
+
 module "ebs" {
   source = "./ebs"
+  availability_zone = local.first_az
 }
 
 module "vpc" {
   source = "./vpc"
+  availability_zone = local.first_az
 }
 
 module "role" {

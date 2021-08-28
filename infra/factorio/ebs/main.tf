@@ -1,9 +1,5 @@
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
 resource "aws_ebs_volume" "saves_volume" {
-  availability_zone = data.aws_availability_zones.available.names[0]
+  availability_zone = var.availability_zone
   size = 5
   type = "gp3"
   iops = 3000
