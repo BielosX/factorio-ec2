@@ -55,6 +55,7 @@ resource "aws_instance" "factorio_server" {
     "cw_config_param": aws_ssm_parameter.cw_config_param.id
     "dev_name": local.dev_name
     "config_bucket": var.config_bucket_id
+    backups_retain: 10
   })
   disable_api_termination = false
   instance_initiated_shutdown_behavior = "stop"

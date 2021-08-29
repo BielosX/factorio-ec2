@@ -9,6 +9,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "file", source: "server_config/server-adminlist.json", destination: "/tmp/server-adminlist.json"
     config.vm.provision "file", source: "server_config/map-gen-settings.json", destination: "/tmp/map-gen-settings.json"
     config.vm.provision "file", source: "server_config/map-settings.json", destination: "/tmp/map-settings.json"
+    config.vm.provision "shell", path: "vagrant_scripts/backups_retain_config.sh", args: ["5"]
     config.vm.provision "shell", path: "install_extras.sh"
     config.vm.provision "shell", path: "copy_to_priv.sh"
     config.vm.provision "shell", path: "factorio_install.sh", args: ["1.1.38"]

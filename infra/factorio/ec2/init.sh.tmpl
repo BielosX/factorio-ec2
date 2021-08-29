@@ -25,6 +25,13 @@ if ! mount | grep "/opt/factorio/saves"; then
   chmod -R g+rwx /opt/factorio/saves
 fi
 
+BACKUPS_RETAIN=${backups_retain}
+mkdir -p /usr/lib/systemd/system/backup-on-change.service.d
+printf '[Service]\nEnvironment="BACKUPS_RETAIN=%u"' "$BACKUPS_RETAIN" >> /usr/lib/systemd/system/backup-on-change.service.d/override.conf
+chown -R factorio:factorio /usr/lib/systemd/system/backup-on-change.service.d
+chmod -R g+rwx /usr/lib/systemd/system/backup-on-change.service.d
+systemctl daemon-reload
+
 mkdir -p /etc/factorio
 chown -R factorio:factorio /etc/factorio
 chmod -R g+rwx /etc/factorio
