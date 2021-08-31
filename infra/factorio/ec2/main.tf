@@ -68,6 +68,14 @@ resource "aws_instance" "factorio_server" {
   credit_specification {
     cpu_credits = "standard"
   }
+
+  root_block_device {
+    delete_on_termination = true
+    volume_type = "gp3"
+    throughput = 125
+    iops = 3000
+    volume_size = 8
+  }
 }
 
 resource "aws_volume_attachment" "attach_ebs" {
