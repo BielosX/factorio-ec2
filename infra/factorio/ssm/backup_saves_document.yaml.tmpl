@@ -6,3 +6,4 @@ mainSteps:
     inputs:
       runCommand:
         - for save in /opt/factorio/saves/*.zip; do aws s3 cp "$save" "s3://${bucket_name}/$(basename $save)"; done
+        - for save in /opt/factorio/saves/*.zip.backup_*; do aws s3 cp "$save" "s3://${bucket_name}/$(basename $save)"; done
