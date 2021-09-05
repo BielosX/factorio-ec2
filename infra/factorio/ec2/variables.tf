@@ -21,3 +21,7 @@ variable "subnet_id" {
 variable "saves_volume_id" {
   type = string
 }
+
+variable "enable_server" {
+  type = bool
+}

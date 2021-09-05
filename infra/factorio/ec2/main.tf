@@ -45,6 +45,7 @@ resource "aws_iam_instance_profile" "factorio_server_profile" {
 }
 
 resource "aws_instance" "factorio_server" {
+  count = var.enable_server ? 1 : 0
   ami = data.aws_ami.factorio_image.id
   instance_type = "t3.medium"
   associate_public_ip_address = true
@@ -79,7 +80,8 @@ resource "aws_instance" "factorio_server" {
 }
 
 resource "aws_volume_attachment" "attach_ebs" {
+  count = var.enable_server ? 1 : 0
   device_name = local.dev_name
-  instance_id = aws_instance.factorio_server.id
+  instance_id = aws_instance.factorio_server[0].id
   volume_id = var.saves_volume_id
 }

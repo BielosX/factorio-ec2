@@ -1,3 +1,3 @@
 output "saves_volume_id" {
-  value = aws_ebs_volume.saves_volume.id
+  value = var.enable_server ? aws_ebs_volume.saves_volume[0].id : null
 }

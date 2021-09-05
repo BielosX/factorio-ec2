@@ -15,6 +15,7 @@ locals {
 }
 
 module "ebs" {
+  enable_server = var.enable_server
   source = "./ebs"
   availability_zone = local.first_az
 }
@@ -39,6 +40,7 @@ module "ssm" {
 }
 
 module "ec2" {
+  enable_server = var.enable_server
   source = "./ec2"
   config_bucket_id = module.s3.config_bucket_id
   factorio_version = var.factorio_version
