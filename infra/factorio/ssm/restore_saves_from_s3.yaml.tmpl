@@ -1,0 +1,12 @@
+schemaVersion: '2.2'
+description: Copy Factorio saves from backup bucket
+mainSteps:
+  - action: aws:runShellScript
+    name: CopySaves
+    inputs:
+      runCommand:
+        - systemctl stop backup-on-change.service
+        - systemctl stop factorio.service
+        - aws s3 cp s3://${bucket_name} /opt/factorio/saves --recursive
+        - systemctl start factorio.service
+        - systemctl start backup-on-change.service
