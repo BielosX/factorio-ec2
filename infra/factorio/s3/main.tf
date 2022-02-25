@@ -9,17 +9,29 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "config_bucket" {
   bucket = "factorio-config-bucket-${data.aws_caller_identity.current.account_id}-${var.region}"
-  acl = "public-read"
   force_destroy = true
+}
+
+resource "aws_s3_bucket_acl" "config_bucket_acl" {
+  bucket = aws_s3_bucket.config_bucket.id
+  acl = "public-read"
 }
 
 resource "aws_s3_bucket" "saves_backup_bucket" {
   bucket = "factorio-saves-buckup-${data.aws_caller_identity.current.account_id}-${var.region}"
-  acl = "public-read"
   force_destroy = true
-  versioning {
-    enabled = true
+}
+
+resource "aws_s3_bucket_versioning" "saves_backup_bucket_versioning" {
+  bucket = aws_s3_bucket.saves_backup_bucket.id
+  versioning_configuration {
+    status = "Enabled"
   }
+}
+
+resource "aws_s3_bucket_acl" "saves_backup_bucket_acl" {
+  bucket = aws_s3_bucket.saves_backup_bucket.id
+  acl = "public-read"
 }
 
 resource "aws_s3_bucket_object" "server_settings" {

@@ -12,7 +12,7 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell", path: "vagrant_scripts/backups_retain_config.sh", args: ["5"]
     config.vm.provision "shell", path: "install_extras.sh"
     config.vm.provision "shell", path: "copy_to_priv.sh"
-    config.vm.provision "shell", path: "factorio_install.sh", args: ["1.1.38"]
+    config.vm.provision "shell", path: "factorio_install.sh", args: [ENV['VERSION']]
     config.vm.provision "shell", path: "vagrant_scripts/make_saves_dir.sh"
     config.vm.network "forwarded_port", guest: 34197, host: 34197, protocol: "udp"
 end

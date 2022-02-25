@@ -1,0 +1,20 @@
+Resources:
+  StateBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "factorio-terraform-state-${AWS::Region}-${AWS::AccountId}"
+      AccessControl: "AuthenticatedRead"
+  LockTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "factorio-terraform-lock"
+      BillingMode: "PAY_PER_REQUEST"
+      AttributeDefinitions:
+        - AttributeName: "LockID"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "LockID"
+          KeyType: "HASH"
+Outputs:
+  BucketName:
+    Value: !Ref StateBucket
