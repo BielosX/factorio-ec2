@@ -1,24 +1,29 @@
 #!/bin/bash
 
+REGION=$2
+if [ -z "$REGION" ]; then
+    REGION="eu-central-1"
+fi
 FACTORIO_VERSION="1.1.53"
-export AWS_DEFAULT_REGION=eu-central-1
+BACKEND_STACK="terraform-backend"
+export AWS_DEFAULT_REGION=$REGION
 
 deploy_infra() {
-  aws cloudformation deploy --template-file infra/terraform_backend.yaml --stack-name terraform-backend
-  pushd infra/env/bielosx-eu-central-1 || exit
+  aws cloudformation deploy --template-file infra/terraform_backend.yaml --stack-name "$BACKEND_STACK"
+  pushd "infra/env/bielosx-$REGION" || exit
   terraform init
   terraform apply -var "factorio_version=${FACTORIO_VERSION}"
   popd || exit
 }
 
 destroy_infra() {
-  pushd infra/env/bielosx-eu-central-1 || exit
+  pushd "infra/env/bielosx-$REGION" || exit
   terraform destroy
   popd || exit
-  BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name terraform-backend | jq -r '.Stacks[0].Outputs[0].OutputValue')
+  BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name "$BACKEND_STACK" | jq -r '.Stacks[0].Outputs[0].OutputValue')
   aws s3 rm --recursive "s3://$BUCKET_NAME"
-  aws cloudformation delete-stack --stack-name terraform-backend
-  aws cloudformation wait stack-delete-complete --stack-name terraform-backend
+  aws cloudformation delete-stack --stack-name "$BACKEND_STACK"
+  aws cloudformation wait stack-delete-complete --stack-name "$BACKEND_STACK"
 }
 
 build_image() {
@@ -41,5 +46,5 @@ case "$1" in
   "image") build_image ;;
   "vagrant_up") vagrant_up ;;
   "vagrant_destroy") vagrant_destroy ;;
-  *) echo "infra/image/vagrant_up/vagrant_destroy" ;;
+  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy" ;;
 esac
