@@ -40,11 +40,16 @@ vagrant_destroy() {
   VERSION=${FACTORIO_VERSION} vagrant destroy
 }
 
+restore_saves() {
+  aws ssm send-command --document-name factorio_saves_restore --targets Key=tag:Name,Values=factorio-server
+}
+
 case "$1" in
   "infra") deploy_infra ;;
   "destroy_infra") destroy_infra ;;
   "image") build_image ;;
   "vagrant_up") vagrant_up ;;
   "vagrant_destroy") vagrant_destroy ;;
-  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy" ;;
+  "restore_saves") restore_saves ;;
+  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves" ;;
 esac
