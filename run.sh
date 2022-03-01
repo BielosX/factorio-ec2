@@ -95,3 +95,4 @@ case "$1" in
   "ip") print_public_ip ;;
   *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves/remove_images/start/stop/ip" ;;
 esac
+
