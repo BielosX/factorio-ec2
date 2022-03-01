@@ -44,6 +44,21 @@ restore_saves() {
   aws ssm send-command --document-name factorio_saves_restore --targets Key=tag:Name,Values=factorio-server
 }
 
+get_instance_id() {
+  INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" | \
+    jq -r '.Reservations[0].Instances[0].InstanceId')
+}
+
+stop_instance() {
+  get_instance_id
+  aws ec2 stop-instances --instance-ids "$INSTANCE_ID"
+}
+
+start_instance() {
+  get_instance_id
+  aws ec2 start-instances --instance-ids "$INSTANCE_ID"
+}
+
 remove_images() {
   images=$(aws ec2 describe-images --filters "Name=tag:Name,Values=factorio-server-image")
   for k in $(echo "$images" | jq -r '.Images | keys | .[]'); do
@@ -61,6 +76,12 @@ remove_images() {
   done
 }
 
+print_public_ip() {
+  IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" | \
+    jq -r '.Reservations[0].Instances[0].PublicIpAddress')
+  echo "$IP"
+}
+
 case "$1" in
   "infra") deploy_infra ;;
   "destroy_infra") destroy_infra ;;
@@ -69,5 +90,8 @@ case "$1" in
   "vagrant_destroy") vagrant_destroy ;;
   "restore_saves") restore_saves ;;
   "remove_images") remove_images ;;
-  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves/remove_images" ;;
+  "start") start_instance ;;
+  "stop") stop_instance ;;
+  "ip") print_public_ip ;;
+  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves/remove_images/start/stop/ip" ;;
 esac
