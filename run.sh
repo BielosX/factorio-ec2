@@ -44,6 +44,10 @@ restore_saves() {
   aws ssm send-command --document-name factorio_saves_restore --targets Key=tag:Name,Values=factorio-server
 }
 
+backup_saves() {
+  aws ssm send-command --document-name factorio_saves_backup --targets Key=tag:Name,Values=factorio-server
+}
+
 get_instance_id() {
   INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" | \
     jq -r '.Reservations[0].Instances[0].InstanceId')
@@ -93,6 +97,7 @@ case "$1" in
   "start") start_instance ;;
   "stop") stop_instance ;;
   "ip") print_public_ip ;;
-  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves/remove_images/start/stop/ip" ;;
+  "backup") backup_saves ;;
+  *) echo "Actions: infra/destroy_infra/image/vagrant_up/vagrant_destroy/restore_saves/remove_images/start/stop/ip/backup" ;;
 esac
 
