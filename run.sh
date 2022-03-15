@@ -48,10 +48,14 @@ backup_saves() {
   aws ssm send-command --document-name factorio_saves_backup --targets Key=tag:Name,Values=factorio-server
 }
 
+get_instances() {
+  INSTANCES=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" \
+    "Name=instance-state-name,Values=running,stopped,stopping,pending")
+}
+
 get_instance_id() {
-  INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" \
-    "Name=instance-state-name,Values=running,stopped,stopping,pending" | \
-    jq -r '.Reservations[0].Instances[0].InstanceId')
+  get_instances
+  INSTANCE_ID=$(echo $INSTANCES | jq -r '.Reservations[0].Instances[0].InstanceId')
 }
 
 stop_instance() {
@@ -82,8 +86,8 @@ remove_images() {
 }
 
 print_public_ip() {
-  IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" | \
-    jq -r '.Reservations[0].Instances[0].PublicIpAddress')
+  get_instances
+  IP=$(echo $INSTANCES | jq -r '.Reservations[0].Instances[0].PublicIpAddress')
   echo "$IP"
 }
 
