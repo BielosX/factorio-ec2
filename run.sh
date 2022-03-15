@@ -49,7 +49,8 @@ backup_saves() {
 }
 
 get_instance_id() {
-  INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" | \
+  INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=factorio-server" \
+    "Name=instance-state-name,Values=running,stopped,stopping,pending" | \
     jq -r '.Reservations[0].Instances[0].InstanceId')
 }
 
