@@ -4,7 +4,7 @@ REGION=$2
 if [ -z "$REGION" ]; then
     REGION="eu-central-1"
 fi
-FACTORIO_VERSION="1.1.53"
+FACTORIO_VERSION="1.1.57"
 BACKEND_STACK="terraform-backend"
 export AWS_DEFAULT_REGION=$REGION
 
