@@ -15,5 +15,5 @@ module "factorio" {
   source = "../../factorio"
   region = "eu-central-1"
   factorio_version = var.factorio_version
-  enable_server = true
+  enable_server = false
 }
