@@ -18,7 +18,7 @@ deploy_infra() {
 
 destroy_infra() {
   pushd "infra/env/bielosx-$REGION" || exit
-  terraform destroy
+  terraform destroy || exit
   popd || exit
   BUCKET_NAME=$(aws cloudformation describe-stacks --stack-name "$BACKEND_STACK" | jq -r '.Stacks[0].Outputs[0].OutputValue')
   aws s3 rm --recursive "s3://$BUCKET_NAME"
