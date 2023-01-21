@@ -7,11 +7,14 @@ fi
 FACTORIO_VERSION="1.1.59"
 BACKEND_STACK="terraform-backend"
 export AWS_DEFAULT_REGION=$REGION
+ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
 
 deploy_infra() {
   aws cloudformation deploy --template-file infra/terraform_backend.yaml --stack-name "$BACKEND_STACK"
+  bucket="factorio-terraform-state-${REGION}-${ACCOUNT_ID}"
   pushd "infra/env/bielosx-$REGION" || exit
-  terraform init
+  terraform init \
+    -backend-config="bucket=${bucket}" || exit
   terraform apply -var "factorio_version=${FACTORIO_VERSION}"
   popd || exit
 }
