@@ -4,13 +4,13 @@ REGION=$2
 if [ -z "$REGION" ]; then
     REGION="eu-central-1"
 fi
-FACTORIO_VERSION="1.1.59"
+FACTORIO_VERSION="1.1.80"
 BACKEND_STACK="terraform-backend"
 export AWS_DEFAULT_REGION=$REGION
 ACCOUNT_ID=$(aws sts get-caller-identity | jq -r '.Account')
 
 deploy_infra() {
-  aws cloudformation deploy --template-file infra/terraform_backend.yaml --stack-name "$BACKEND_STACK"
+  aws cloudformation deploy --template-file infra/terraform_backend.yaml --stack-name "$BACKEND_STACK" || exit
   bucket="factorio-terraform-state-${REGION}-${ACCOUNT_ID}"
   pushd "infra/env/bielosx-$REGION" || exit
   terraform init \
@@ -58,7 +58,7 @@ get_instances() {
 
 get_instance_id() {
   get_instances
-  INSTANCE_ID=$(echo $INSTANCES | jq -r '.Reservations[0].Instances[0].InstanceId')
+  INSTANCE_ID=$(echo "$INSTANCES" | jq -r '.Reservations[0].Instances[0].InstanceId')
 }
 
 stop_instance() {
@@ -90,7 +90,7 @@ remove_images() {
 
 print_public_ip() {
   get_instances
-  IP=$(echo $INSTANCES | jq -r '.Reservations[0].Instances[0].PublicIpAddress')
+  IP=$(echo "$INSTANCES" | jq -r '.Reservations[0].Instances[0].PublicIpAddress')
   echo "$IP"
 }
 
